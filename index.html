@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nihongo Numbers</title>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1><span class="kanji-logo">漢</span> Nihongo Numbers</h1>
+            <button id="settings-btn" class="icon-btn" aria-label="Settings">
+                <i class="fi fi-rr-settings"></i>
+            </button>
+        </header>
+
+        <main class="quiz-card">
+            <div class="listen-container">
+                <p>Listen to the number</p>
+                <button id="play-btn" class="speaker-btn" aria-label="Listen to number">
+                    <i id="speaker-icon" class="fi fi-rr-volume"></i>
+                    <span id="play-btn-text">Click to listen</span>
+                </button>
+            </div>
+            
+            <p class="input-label">Enter the number you heard</p>
+            <div id="input-display" class="input-display"></div>
+
+            <div id="keypad" class="keypad">
+                <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
+                <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
+                <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
+                <button data-key="clear" class="clear-btn">Clear</button>
+                <button data-key="0">0</button>
+                <button data-key="backspace" aria-label="Backspace">
+                    <i class="fi fi-rr-delete-left"></i>
+                </button>
+            </div>
+
+            <button id="action-btn" class="action-btn">Check Answer</button>
+        </main>
+
+        <footer class="session-stats">
+            <div class="stats-header"><h3>Session</h3><div class="streak">Streak: <span id="streak-count">0</span><i class="fi fi-rr-flame fire-icon"></i></div></div>
+            <div class="progress-bar-container"><div id="progress-bar" class="progress-bar"></div></div>
+            <div class="stats-details"><span id="total-count">0 total</span><div><span class="correct-text">✓ <span id="correct-count">0</span></span><span class="incorrect-text">✗ <span id="incorrect-count">0</span></span></div><span id="percentage" class="percentage">0%</span></div>
+        </footer>
+    </div>
+    
+    <!-- Feedback Modal (NEW) -->
+    <div id="feedback-modal" class="modal-overlay hidden">
+        <div class="modal-content feedback-content">
+            <div id="feedback-icon-container"></div>
+            <p id="feedback-text-container" class="feedback-text"></p>
+            <p id="correct-answer-container" class="correct-answer-text"></p>
+            <button id="next-question-btn" class="action-btn">Next Question</button>
+        </div>
+    </div>
+
+    <!-- Settings Modal (Unchanged) -->
+    <div id="settings-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button id="close-modal-btn" class="close-btn">&times;</button>
+            <h2>Settings</h2>
+            <div class="setting-group"><h3 class="setting-group-title">Audio</h3><div class="setting-item"><label for="speech-rate">Speech Rate</label><input type="range" id="speech-rate" min="0.5" max="1.5" step="0.1" value="1"></div><div class="setting-item"><label for="auto-play">Auto Play</label><label class="switch"><input type="checkbox" id="auto-play" checked><span class="slider"></span></label></div></div>
+            <div class="setting-group"><h3 class="setting-group-title">Practice</h3><div class="setting-item"><label for="difficulty">Difficulty</label><select id="difficulty"><option value="1-100">1-100</option><option value="1-1000" selected>1-1,000</option><option value="1-10000">1-10,000</option><option value="1-99999">1-99,999</option></select></div></div>
+            <div class="setting-group"><h3 class="setting-group-title">Appearance</h3><div class="setting-item"><label for="dark-mode">Dark Mode</label><label class="switch"><input type="checkbox" id="dark-mode"><span class="slider"></span></label></div></div>
+            <div class="setting-group"><h3 class="setting-group-title">Data</h3><button id="reset-progress" class="data-btn danger-btn">Reset All Progress</button></div>
+            <button id="save-settings-btn" class="action-btn">Save & Close</button>
+        </div>
+    </div>
+    
+    <div id="toast" class="toast hidden"></div>
+
+    <footer class="creator-credit">Made with ❤️ by <a href="https://www.sumanpaudel.com" target="_blank" rel="noopener noreferrer">Suman Paudel</a></footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
