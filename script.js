@@ -22,22 +22,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const toast = document.getElementById('toast');
 
     // App State
+    let isGameStarted = false; // NEW: State to track if the game has started
     let currentNumber = 0, userInput = '', stats = { total: 0, correct: 0, incorrect: 0, streak: 0 };
     let settings = { rate: 1.0, autoPlay: true, difficulty: '1-1000', darkMode: false };
 
-    // Japanese Number Conversion
-    function numberToJapanese(num) {
-        if (num === 0) return 'zero'; const units = ['', 'ichi', 'ni', 'san', 'yon', 'go', 'roku', 'nana', 'hachi', 'kyuu']; const tens = ['', 'juu', 'nijuu', 'sanjuu', 'yonjuu', 'gojuu', 'rokujuu', 'nanajuu', 'hachijuu', 'kyuujuu']; const hyaku = 'hyaku', sen = 'sen', man = 'man'; let str = ''; if (num >= 10000) { const manPart = Math.floor(num / 10000); str += (manPart > 1 ? numberToJapanese(manPart) : '') + man; num %= 10000; } if (num >= 1000) { const senPart = Math.floor(num / 1000); if (senPart === 1) str += sen; else if (senPart === 3) str += 'sanzen'; else if (senPart === 8) str += 'hassen'; else str += units[senPart] + sen; num %= 1000; } if (num >= 100) { const hyakuPart = Math.floor(num / 100); if (hyakuPart === 1) str += hyaku; else if (hyakuPart === 3) str += 'sanbyaku'; else if (hyakuPart === 6) str += 'roppyaku'; else if (hyakuPart === 8) str += 'happyaku'; else str += units[hyakuPart] + hyaku; num %= 100; } if (num >= 10) { str += tens[Math.floor(num / 10)]; num %= 10; } if (num > 0) { str += units[num]; } return str;
-    }
+    // Japanese Number Conversion (Unchanged and compressed)
+    function numberToJapanese(num) { if (num === 0) return 'zero'; const units = ['', 'ichi', 'ni', 'san', 'yon', 'go', 'roku', 'nana', 'hachi', 'kyuu']; const tens = ['', 'juu', 'nijuu', 'sanjuu', 'yonjuu', 'gojuu', 'rokujuu', 'nanajuu', 'hachijuu', 'kyuujuu']; const hyaku = 'hyaku', sen = 'sen', man = 'man'; let str = ''; if (num >= 10000) { const manPart = Math.floor(num / 10000); str += (manPart > 1 ? numberToJapanese(manPart) : '') + man; num %= 10000; } if (num >= 1000) { const senPart = Math.floor(num / 1000); if (senPart === 1) str += sen; else if (senPart === 3) str += 'sanzen'; else if (senPart === 8) str += 'hassen'; else str += units[senPart] + sen; num %= 1000; } if (num >= 100) { const hyakuPart = Math.floor(num / 100); if (hyakuPart === 1) str += hyaku; else if (hyakuPart === 3) str += 'sanbyaku'; else if (hyakuPart === 6) str += 'roppyaku'; else if (hyakuPart === 8) str += 'happyaku'; else str += units[hyakuPart] + hyaku; num %= 100; } if (num >= 10) { str += tens[Math.floor(num / 10)]; num %= 10; } if (num > 0) { str += units[num]; } return str; }
 
     // --- Core App Logic ---
     function generateNumber() { const [min, max] = settings.difficulty.split('-').map(Number); currentNumber = Math.floor(Math.random() * (max - min + 1)) + min; }
-    function speak(text) {
-        if (!window.speechSynthesis) { alert("Speech synthesis not supported."); return; }
-        window.speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'ja-JP'; utterance.rate = settings.rate; playBtnText.textContent = 'Playing...'; playBtn.disabled = true; utterance.onend = () => { playBtnText.textContent = 'Click to listen'; playBtn.disabled = false; }; window.speechSynthesis.speak(utterance);
-    }
+    function speak(text) { if (!window.speechSynthesis) { alert("Speech synthesis not supported."); return; } window.speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'ja-JP'; utterance.rate = settings.rate; playBtnText.textContent = 'Playing...'; playBtn.disabled = true; utterance.onend = () => { playBtnText.textContent = 'Click to listen'; playBtn.disabled = false; }; window.speechSynthesis.speak(utterance); }
     function playCurrentNumber() { speak(numberToJapanese(currentNumber)); }
     
+    function startGame() {
+        isGameStarted = true;
+        keypad.classList.remove('disabled');
+        actionBtn.textContent = 'Check Answer';
+        generateNumber();
+        playCurrentNumber();
+    }
+
     function startNewRound() {
         feedbackModal.classList.add('hidden');
         userInput = '';
@@ -53,14 +57,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const userNum = parseInt(userInput, 10);
         
         if (userNum === currentNumber) {
-            stats.correct++;
-            stats.streak++;
+            stats.correct++; stats.streak++;
             feedbackIconContainer.innerHTML = `<i class="fi fi-rr-check-circle correct-text"></i>`;
             feedbackTextContainer.textContent = 'Correct!';
             correctAnswerContainer.textContent = '';
         } else {
-            stats.incorrect++;
-            stats.streak = 0;
+            stats.incorrect++; stats.streak = 0;
             feedbackIconContainer.innerHTML = `<i class="fi fi-rr-exclamation incorrect-text"></i>`;
             feedbackTextContainer.textContent = 'Incorrect';
             correctAnswerContainer.textContent = `Correct answer: ${currentNumber}`;
@@ -80,6 +82,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function saveState() { localStorage.setItem('nihongoNumbersStats', JSON.stringify(stats)); localStorage.setItem('nihongoNumbersSettings', JSON.stringify(settings)); }
     function loadState() { const savedStats = JSON.parse(localStorage.getItem('nihongoNumbersStats')); if (savedStats) stats = savedStats; const savedSettings = JSON.parse(localStorage.getItem('nihongoNumbersSettings')); if (savedSettings) settings = savedSettings; }
     
+    // NEW: Function to set the initial "pre-game" state
+    function setupInitialState() {
+        actionBtn.textContent = 'Start Listening';
+        keypad.classList.add('disabled');
+        inputDisplay.textContent = '';
+        userInput = '';
+    }
+
     // --- Event Handlers ---
     keypad.addEventListener('click', (e) => {
         if (!e.target.matches('button')) return;
@@ -89,36 +99,50 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (key === 'backspace') userInput = userInput.slice(0, -1);
         updateDisplay();
     });
-    actionBtn.addEventListener('click', checkAnswer);
+
+    // MODIFIED: Main button now has two functions
+    actionBtn.addEventListener('click', () => {
+        if (!isGameStarted) {
+            startGame();
+        } else {
+            checkAnswer();
+        }
+    });
+    
     nextQuestionBtn.addEventListener('click', startNewRound);
-    playBtn.addEventListener('click', playCurrentNumber);
+    playBtn.addEventListener('click', () => {
+        if(isGameStarted) playCurrentNumber();
+    });
     settingsBtn.addEventListener('click', () => settingsModal.classList.remove('hidden'));
     closeModalBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
     saveSettingsBtn.addEventListener('click', () => {
         const oldDifficulty = settings.difficulty;
-        settings.rate = parseFloat(speechRateInput.value);
-        settings.autoPlay = autoPlayInput.checked;
-        settings.difficulty = difficultyInput.value;
-        settings.darkMode = darkModeInput.checked;
-        applySettings();
-        saveState();
-        showToast('Settings have been updated.');
+        settings.rate = parseFloat(speechRateInput.value); settings.autoPlay = autoPlayInput.checked; settings.difficulty = difficultyInput.value; settings.darkMode = darkModeInput.checked;
+        applySettings(); saveState(); showToast('Settings have been updated.');
         settingsModal.classList.add('hidden');
-        if (oldDifficulty !== settings.difficulty) startNewRound();
+        if (isGameStarted && oldDifficulty !== settings.difficulty) {
+            startNewRound();
+        }
     });
     resetProgressBtn.addEventListener('click', () => {
         if (confirm('Are you sure you want to reset all your progress? This cannot be undone.')) {
             stats = { total: 0, correct: 0, incorrect: 0, streak: 0 };
+            isGameStarted = false; // Reset game state as well
             updateStatsUI();
             saveState();
+            setupInitialState(); // Go back to "Start Listening" screen
             showToast('Progress has been reset.');
             settingsModal.classList.add('hidden');
         }
     });
     
-    // Initialization
-    loadState();
-    applySettings();
-    updateStatsUI();
-    startNewRound();
+    // --- Initialization ---
+    function init() {
+        loadState();
+        applySettings();
+        updateStatsUI();
+        setupInitialState(); // Set up the initial screen
+    }
+
+    init();
 });
