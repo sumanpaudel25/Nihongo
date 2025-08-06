@@ -6,8 +6,11 @@
     --bg-dark: #111827; --card-bg-dark: #1f2937; --text-dark: #f9fafb; --text-muted-dark: #9ca3af; --border-dark: #374151; --shadow-dark: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Roboto', sans-serif; background-color: var(--bg-light); color: var(--text-light); display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 1rem; transition: background-color 0.3s, color 0.3s; }
+
+/* FIXED: Changed alignment and added padding to fix spacing above title */
+body { font-family: 'Roboto', sans-serif; background-color: var(--bg-light); color: var(--text-light); display: flex; flex-direction: column; justify-content: flex-start; align-items: center; min-height: 100vh; padding: 2rem 1rem 1rem 1rem; transition: background-color 0.3s, color 0.3s; }
 body.dark-mode { background-color: var(--bg-dark); color: var(--text-dark); }
+
 .app-container { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 1rem; }
 .app-header { display: flex; justify-content: space-between; align-items: center; }
 .app-header h1 { font-size: 1.2rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
@@ -30,11 +33,13 @@ body.dark-mode #play-btn-text { color: var(--text-muted-dark); }
 body.dark-mode .input-label { color: var(--text-muted-dark); }
 .input-display { width: 100%; min-height: 48px; border: 1px solid var(--border-light); background-color: var(--bg-light); border-radius: 8px; font-size: 1.6rem; padding: 0.5rem 1rem; text-align: right; line-height: 1.5; overflow-x: auto; color: var(--text-light); transition: background-color 0.3s, border-color 0.3s; }
 body.dark-mode .input-display { border-color: var(--border-dark); background-color: var(--bg-dark); color: var(--text-dark); }
-.keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin: 1rem 0; }
+.keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin: 1rem 0; transition: opacity 0.3s; }
+/* NEW: Class to disable keypad before game starts */
+.keypad.disabled { opacity: 0.5; pointer-events: none; }
 .keypad button { height: 50px; font-size: 1.2rem; font-weight: 500; border: 1px solid var(--border-light); background-color: transparent; color: var(--text-light); border-radius: 12px; cursor: pointer; transition: background-color 0.1s, transform 0.1s; display: grid; place-items: center; }
 body.dark-mode .keypad button { border-color: var(--border-dark); color: var(--text-dark); }
 .keypad button:active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); transform: scale(0.95); }
-.keypad button i { font-size: 1.2rem; pointer-events: none; }
+.keypad button i { font-size: 1.2rem; pointer-events: none; line-height: 1; }
 .clear-btn { color: var(--incorrect-color) !important; }
 .action-btn { width: 100%; padding: 0.75rem; font-size: 1rem; font-weight: 500; border-radius: 12px; border: none; background-color: var(--primary-color); color: white; cursor: pointer; transition: background-color 0.2s, opacity 0.2s; }
 .action-btn:hover { background-color: var(--primary-hover-color); }
@@ -58,9 +63,9 @@ body.dark-mode .stats-details { color: var(--text-muted-dark); }
 .modal-content { background-color: var(--card-bg-light); padding: 1.25rem; border-radius: 16px; width: 100%; max-width: 360px; position: relative; box-shadow: var(--shadow-light); transform: scale(1); transition: transform 0.3s; }
 body.dark-mode .modal-content { background-color: var(--card-bg-dark); box-shadow: var(--shadow-dark); }
 .modal-overlay.hidden .modal-content { transform: scale(0.95); }
-/* New styles for feedback modal content */
 .feedback-content { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1.5rem; text-align: center; }
 .feedback-content #feedback-icon-container i { font-size: 3rem; animation: pop-in 0.3s; }
+@keyframes pop-in { 0% { transform: scale(0.5); } 100% { transform: scale(1); } }
 .feedback-content .feedback-text { font-size: 1.2rem; font-weight: 500; margin-top: 0.5rem; }
 .feedback-content .correct-answer-text { font-size: 0.9rem; color: var(--text-muted-light); }
 body.dark-mode .feedback-content .correct-answer-text { color: var(--text-muted-dark); }
@@ -70,7 +75,7 @@ body.dark-mode .close-btn { color: var(--text-muted-dark); }
 .modal-content h2 { margin-bottom: 1.25rem; text-align: center; font-size: 1.2rem; }
 .setting-group { margin-bottom: 1.25rem; }
 .setting-group-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted-light); margin-bottom: 0.8rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.4rem; }
-body.dark-mode .setting-group-title { color: var(--text-muted-dark); border-color: var(--border-dark); }
+body.dark--mode .setting-group-title { color: var(--text-muted-dark); border-color: var(--border-dark); }
 .setting-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
 .setting-item label { font-size: 0.95rem; }
 .setting-item select { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-light); background-color: var(--bg-light); color: var(--text-light); }
