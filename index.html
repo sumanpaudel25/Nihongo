@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nihongo Numbers</title>
+    <!-- Flaticon uicons CDN -->
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -35,7 +36,8 @@
                 <button data-key="clear" class="clear-btn">Clear</button>
                 <button data-key="0">0</button>
                 <button data-key="backspace" aria-label="Backspace">
-                    <i class="fi fi-rr-delete-left"></i>
+                    <!-- FIXED: Using the correct backspace icon class -->
+                    <i class="fi fi-rr-backspace"></i>
                 </button>
             </div>
 
@@ -49,7 +51,7 @@
         </footer>
     </div>
     
-    <!-- Feedback Modal (NEW) -->
+    <!-- Feedback Modal -->
     <div id="feedback-modal" class="modal-overlay hidden">
         <div class="modal-content feedback-content">
             <div id="feedback-icon-container"></div>
@@ -59,7 +61,7 @@
         </div>
     </div>
 
-    <!-- Settings Modal (Unchanged) -->
+    <!-- Settings Modal -->
     <div id="settings-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <button id="close-modal-btn" class="close-btn">&times;</button>
