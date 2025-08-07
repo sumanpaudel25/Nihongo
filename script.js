@@ -82,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function saveState() { localStorage.setItem('nihongoNumbersStats', JSON.stringify(stats)); localStorage.setItem('nihongoNumbersSettings', JSON.stringify(settings)); }
     function loadState() { const savedStats = JSON.parse(localStorage.getItem('nihongoNumbersStats')); if (savedStats) stats = savedStats; const savedSettings = JSON.parse(localStorage.getItem('nihongoNumbersSettings')); if (savedSettings) settings = savedSettings; }
     
-    // NEW: Function to set the initial "pre-game" state
     function setupInitialState() {
         actionBtn.textContent = 'Start Listening';
         keypad.classList.add('disabled');
@@ -100,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDisplay();
     });
 
-    // MODIFIED: Main button now has two functions
     actionBtn.addEventListener('click', () => {
         if (!isGameStarted) {
             startGame();
@@ -133,6 +131,39 @@ document.addEventListener('DOMContentLoaded', () => {
             setupInitialState(); // Go back to "Start Listening" screen
             showToast('Progress has been reset.');
             settingsModal.classList.add('hidden');
+        }
+    });
+    
+    // --- NEW: Keyboard Support ---
+    document.addEventListener('keydown', (e) => {
+        // Don't interfere if a modal is open
+        if (!settingsModal.classList.contains('hidden') || !feedbackModal.classList.contains('hidden')) {
+            return;
+        }
+
+        // Handle Enter key to start or check answer
+        if (e.key === 'Enter') {
+            e.preventDefault(); // prevent form submission
+            actionBtn.click(); // Programmatically click the main button
+        }
+        
+        // Only handle other keys if game has started
+        if (!isGameStarted) return;
+        
+        // Handle number inputs
+        if (e.key >= '0' && e.key <= '9' && userInput.length < 10) {
+            userInput += e.key;
+            updateDisplay();
+        }
+        // Handle Backspace key
+        else if (e.key === 'Backspace') {
+            userInput = userInput.slice(0, -1);
+            updateDisplay();
+        }
+        // Handle Delete key (as clear)
+        else if (e.key === 'Delete') {
+            userInput = '';
+            updateDisplay();
         }
     });
     
